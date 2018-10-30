@@ -23,15 +23,11 @@ public final class Config {
   private static long ORDER_TTL;
   private static long USER_TTL;
 
-  public static long getOrder_TTL() {
-    return getOrder_TTL();
-  }
+  public static long getProductTtl() { return PRODUCT_TTL;}
+
+  public static long getOrderTtl(){return  ORDER_TTL;}
 
   public static long getUserTtl() {return USER_TTL;}
-
-  public static long getProductTtl() {
-    return PRODUCT_TTL;
-  }
 
   public static String getDatabaseHost() {
     return DATABASE_HOST;
