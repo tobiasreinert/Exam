@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
+import utils.Encryption;
 import utils.Log;
 
 @Path("user")
@@ -30,6 +31,9 @@ public class UserEndpoints {
     // TODO: Add Encryption to JSON
     // Convert the user object to json in order to return the object
     String json = new Gson().toJson(user);
+
+    json = Encryption.encryptDecryptXOR(json);
+
 
     // Return the user with the status code 200
     // TODO: What should happen if something breaks down?
