@@ -3,7 +3,6 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import cache.ProductCache;
 import model.Product;
 import utils.Log;
@@ -11,9 +10,11 @@ import utils.Log;
 public class ProductController {
 
   private static DatabaseController dbCon;
+  private static ProductCache productCache;
 
   public ProductController() {
     dbCon = new DatabaseController();
+    productCache = new ProductCache();
   }
 
   public static Product getProduct(int id) {

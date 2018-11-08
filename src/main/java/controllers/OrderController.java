@@ -3,6 +3,8 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import cache.OrderCache;
 import model.Address;
 import model.LineItem;
 import model.Order;
@@ -13,8 +15,11 @@ public class OrderController {
 
   private static DatabaseController dbCon;
 
+  private static OrderCache orderCache;
+
   public OrderController() {
     dbCon = new DatabaseController();
+    orderCache = new OrderCache();
   }
 
   public static Order getOrder(int id) {
@@ -77,6 +82,8 @@ public class OrderController {
     }
 
     String sql = "SELECT * FROM order";
+    OrderCache orderCache = new OrderCache();
+    orderCache.getOrders(true);
 
     ResultSet rs = dbCon.query(sql);
     ArrayList<Order> orders = new ArrayList<Order>();
