@@ -12,9 +12,9 @@ public class ProductController {
   private static DatabaseController dbCon;
   private static ProductCache productCache;
 
-  public ProductController() {
-    dbCon = new DatabaseController();
-    productCache = new ProductCache();
+  public ProductController() { dbCon = new DatabaseController();
+
+  productCache = new ProductCache();
   }
 
   public static Product getProduct(int id) {

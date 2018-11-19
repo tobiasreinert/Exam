@@ -3,13 +3,9 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import model.User;
 import utils.Hashing;
 import utils.Log;
@@ -80,8 +76,6 @@ public class UserController {
     // Build SQL
     String sql = "SELECT * FROM user";
 
-    //UserCache userCache = new UserCache();
-    //userCache.getUsers(true);
 
     // Do the query and initialyze an empty list for use if we don't get results
     ResultSet rs = dbCon.query(sql);
@@ -126,7 +120,7 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. fix
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
@@ -195,11 +189,8 @@ public class UserController {
     } catch (SQLException ex) {
       System.out.println(ex.getMessage());
     }
-
-    // Return null
     return null;
   }
-
 }
 
 

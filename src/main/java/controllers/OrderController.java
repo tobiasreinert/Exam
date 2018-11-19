@@ -82,8 +82,9 @@ public class OrderController {
     }
 
     String sql = "SELECT * FROM order";
-    OrderCache orderCache = new OrderCache();
-    orderCache.getOrders(true);
+
+    /*OrderCache orderCache = new OrderCache();
+    orderCache.getOrders(true);*/
 
     ResultSet rs = dbCon.query(sql);
     ArrayList<Order> orders = new ArrayList<Order>();
@@ -142,7 +143,7 @@ public class OrderController {
     // Save the user to the database and save them back to initial order instance
     order.setCustomer(UserController.createUser(order.getCustomer()));
 
-    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts.
+    // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. fix
 
     Connection connection = null;
 
