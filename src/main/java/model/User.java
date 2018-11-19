@@ -7,7 +7,7 @@ public class User {
   public String lastname;
   public String email;
   private String password;
-  private long createdTime;
+  private static long createdTime;
 
   public User(int id, String firstname, String lastname, String password, String email, long createdTime) {
     this.id = id;
@@ -15,7 +15,7 @@ public class User {
     this.lastname = lastname;
     this.password = password;
     this.email = email;
-    this.createdTime=createdTime;
+    this.createdTime = createdTime;
   }
 
   public int getId() {
@@ -58,7 +58,7 @@ public class User {
     this.password = password;
   }
 
-  public long getCreatedTime() {
+  public static long getCreatedTime() {
     return createdTime;
   }
 

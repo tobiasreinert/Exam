@@ -22,6 +22,7 @@ public final class Config {
   private static long PRODUCT_TTL;
   private static long ORDER_TTL;
   private static long USER_TTL;
+  private static String ENCRYPTION_KEY;
 
   public static long getProductTtl() { return PRODUCT_TTL;}
 
@@ -69,6 +70,8 @@ public final class Config {
     return SOLR_CORE;
   }
 
+  public static char[] getEncryptionKey() { return ENCRYPTION_KEY.toCharArray(); }
+
   public static void initializeConfig() throws IOException {
 
     // Init variables to parse JSON
@@ -105,5 +108,6 @@ public final class Config {
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
     ORDER_TTL = json.get("ORDER_TTL").getAsLong();
     USER_TTL = json.get("USER_TTL").getAsLong();
+    ENCRYPTION_KEY = json.get("ENCRYPTION_TTL").getAsString();
   }
 }
