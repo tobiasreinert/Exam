@@ -1,6 +1,9 @@
 package com.cbsexam;
 
 import cache.UserCache;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
 import controllers.UserController;
 import java.util.ArrayList;
@@ -97,11 +100,32 @@ public class UserEndpoints {
     return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
-  // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+  // TODO: Make the system able to delete users fix
+  @POST
+  @Path("/delete/{token}")
+  public Response deleteUser(@PathParam("token") String token) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    boolean userWasDeleted = UserController.delete(token);
+
+    userCache.getUsers(true);
+
+    DecodedJWT jwt = null;
+    try {
+      jwt = JWT.decode(token);
+    } catch (JWTDecodeException exception) {
+
+    }
+
+    int id = jwt.getClaim("userId").asInt();
+
+    if (userWasDeleted == true) {
+      return Response.status(200).entity("User ID" + id + " was deleted ").build();
+
+    } else {
+      return Response.status(400).entity("Could not delete user").build();
+
+    }
+
   }
 
   // TODO: Make the system able to update users

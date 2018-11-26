@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import model.User;
 import utils.Hashing;
 import utils.Log;
@@ -190,7 +192,38 @@ public class UserController {
       System.out.println(ex.getMessage());
     }
     return null;
+
   }
+  public static boolean delete(String token) {
+
+    DecodedJWT jwt = null;
+    try {
+      jwt = JWT.decode(token);
+    } catch (JWTDecodeException exception) {
+
+    }
+
+    int id = jwt.getClaim("userId").asInt();
+
+    Log.writeLog(UserController.class.getName(), null, "Deleting user with id: " + id, 0);
+
+    String sql = "DELETE from user where id =" + id;
+
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+
+    int i = dbCon.deleteUser(sql);
+
+    if (i == 1) {
+      Log.writeLog(UserController.class.getName(), null, "User was actually deleted with id: " + id + " and " + i + " rows were/was affected", 0);
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
 }
 
 
