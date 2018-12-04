@@ -22,6 +22,7 @@ import utils.Log;
 public class UserEndpoints {
 
   UserCache userCache = new UserCache();
+  UserController userController = new UserController();
 
   /**
    * @param idUser
@@ -46,7 +47,9 @@ public class UserEndpoints {
     return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
   }
 
-  /** @return Responses */
+  /**
+   * @return Responses
+   */
   @GET
   @Path("/")
   public Response getUsers() {
@@ -68,7 +71,7 @@ public class UserEndpoints {
   }
 
   @POST
-  @Path("/")
+  @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response createUser(String body) {
 
@@ -94,11 +97,25 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String x) {
+  public Response loginUser(String body) {
+    User user = new Gson().fromJson(body, User.class);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    String token = userController.login(user);
+
+    try {
+      if (token != null) {
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
+      } else {
+        return Response.status(400).entity("Could not login").build();
+      }
+
+    } catch (Exception e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+
+    return null;
   }
+
 
   // TODO: Make the system able to delete users fix
   @POST
@@ -127,11 +144,10 @@ public class UserEndpoints {
     }
 
   }
+}
+
 
   // TODO: Make the system able to update users
-  public Response updateUser(String x) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
-  }
-}
+
+

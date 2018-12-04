@@ -3,6 +3,8 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import cache.UserCache;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -15,8 +17,9 @@ import utils.Log;
 public class UserController {
 
   private static DatabaseController dbCon;
-  private static Hashing hashing;
-  String token = null;
+  //private static Hashing hashing;
+
+  //String token = null;
 
   public UserController() {
     dbCon = new DatabaseController();
@@ -28,6 +31,9 @@ public class UserController {
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
+
+    UserCache userCache = new UserCache();
+    userCache.getUsers(true);
 
     // Build the query for DB
     String sql = "SELECT * FROM user where id=" + id;
@@ -47,7 +53,6 @@ public class UserController {
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getLong("created_at"));
-
 
 
         // return the create object
@@ -122,12 +127,14 @@ public class UserController {
     }
 
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it. fix
+    // TODO: Hash the user password before saving it. (skal hashes)
     int userID = dbCon.insert(
             "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
                     + user.getFirstname()
                     + "', '"
                     + user.getLastname()
+                    + "', '"
+                    + user.getPassword()
                     + "', '"
                     + user.getEmail()
                     + "', "
@@ -146,24 +153,34 @@ public class UserController {
     return user;
   }
 
+
   public String login(User user) {
+
+    Hashing hashing = new Hashing();
+
+    Log.writeLog(UserController.class.getName(), user, "Login", 0);
 
     // Check for connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
 
-    // Build the query for DB
-    String sql = "SELECT * FROM user where email=" + user.getEmail() + "AND password=" + Hashing.sha(user.getEmail());
 
-    // Actually do the query
+    // Build the query for DB
+    // String sql = "SELECT * FROM user WHERE email= '" + user.getEmail() + "' AND password='" + Hashing.sha(user.getPassword()) + "'";
+    String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + Hashing.sha(user.getPassword()) + "'";
+    // select from user wnere id = 1;
+    // select from user where email = 'test@example.com' AND
+
     ResultSet rs = dbCon.query(sql);
     User loginUser = null;
+    String token = null;
+    //hashing.setLoginSalt(String.valueOf(System.currentTimeMillis() / 1000L));
 
     try {
       // Get first object, since we only have one
       if (rs.next()) {
-        user = new User(
+        loginUser = new User(
                 rs.getInt("id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
@@ -171,29 +188,32 @@ public class UserController {
                 rs.getString("email"),
                 rs.getLong("created_at"));
 
-        {
-          try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
-            String token = JWT.create()
-                    .withIssuer("auth0")
-                    .sign(algorithm);
-          } catch (JWTCreationException exception){
-            //Invalid Signing configuration / Couldn't convert Claims.
-          }
-
+        try {
+          Algorithm algorithm = Algorithm.HMAC256("secret");
+          token = JWT.create()
+                  .withIssuer("auth0").withClaim("userId", loginUser.id).withClaim("createdAt", loginUser.getCreatedTime())
+                  .sign(algorithm);
+        } catch (JWTCreationException exception) {
+          //Invalid Signing configuration / Couldn't convert Claims.
         }
 
-        // return the token directly
+        Log.writeLog(UserController.class.getName(), user, "User actually logged in", 0);
+        // return hashing.hashTokenWithSalt(token);     Hashet token
         return token;
       } else {
-        System.out.println("No user found");
+        // System.out.println("Wrong username or password");
+        System.out.println("Could not find user");
+
       }
+
+
     } catch (SQLException ex) {
       System.out.println(ex.getMessage());
     }
-    return null;
 
+    return null;
   }
+
   public static boolean delete(String token) {
 
     DecodedJWT jwt = null;
@@ -225,6 +245,7 @@ public class UserController {
   }
 
 }
+
 
 
 

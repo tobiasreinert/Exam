@@ -11,7 +11,7 @@ public final class Hashing {
 
   //private String salt = "Salt";
 
-  // TODO: You should add a salt and make this secure
+  // TODO: You should add a salt and make this secure (no need to fix)
   public static String md5(String rawString) {
     try {
 
