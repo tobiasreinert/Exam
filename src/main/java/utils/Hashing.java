@@ -9,9 +9,9 @@ import model.User;
 
 public final class Hashing {
 
-  //private String salt = "Salt";
+  private String salt = Config.getSalt();
 
-  // TODO: You should add a salt and make this secure (no need to fix)
+  // TODO: You should add a salt and make this secure (no need to fix, har brugt SHA istedet for MD5 i hashing)
   public static String md5(String rawString) {
     try {
 
@@ -65,5 +65,9 @@ public final class Hashing {
     return rawString;
   }
 
+  public String hashWithSalt(String str){
+    String salt = str+this.salt;
+    return sha(salt);
+  }
 
 }

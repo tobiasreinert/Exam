@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import cache.OrderCache;
+import com.cbsexam.OrderEndpoints;
 import model.Address;
 import model.LineItem;
 import model.Order;
@@ -15,12 +16,7 @@ public class OrderController {
 
   private static DatabaseController dbCon;
 
-  private static OrderCache orderCache;
-
-  public OrderController() {
-    dbCon = new DatabaseController();
-    orderCache = new OrderCache();
-  }
+  public OrderController() { dbCon = new DatabaseController(); }
 
   public static Order getOrder(int id) {
 
@@ -81,7 +77,7 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    String sql = "SELECT * FROM order";
+    String sql = "SELECT * FROM orders";
 
     /*OrderCache orderCache = new OrderCache();
     orderCache.getOrders(true);*/
@@ -187,25 +183,31 @@ public class OrderController {
 
       //comitter hvis ordren er gået igennem
       connection.commit();
-    } catch (SQLException e2)
-
-    {
-
-      //Hvis ordren ikke går igennem, ruller den tilbage
-      System.out.println("No Rollback" + e2.getMessage());
-    } finally {
-
-      //finally, da autocommit altid skal være true
+    } catch (SQLException e) {
       try {
-        connection.setAutoCommit(true);
-      } catch (SQLException e3) {
-        e3.printStackTrace();
+        connection.rollback();
 
+        System.out.println("Rollback");
+      } catch (SQLException e2) {
+
+        //Hvis ordren ikke går igennem, ruller den tilbage
+        System.out.println("No Rollback" + e2.getMessage());
+      } finally {
+
+        //finally, da autocommit altid skal være true
+        try {
+          connection.setAutoCommit(true);
+        } catch (SQLException e3) {
+          e3.printStackTrace();
+
+        }
       }
+    }
 
+    OrderEndpoints.orderCache.getOrders(true);
 
       // Return order
       return order;
     }
   }
-}
+

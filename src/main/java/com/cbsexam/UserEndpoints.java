@@ -44,7 +44,13 @@ public class UserEndpoints {
 
     // Return the user with the status code 200
     // TODO: What should happen if something breaks down?
+    if (user !=null) {
+
     return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+  } else
+  {
+    return Response.status(400).entity("Could not find user").build();
+    }
   }
 
   /**
@@ -98,6 +104,7 @@ public class UserEndpoints {
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
+
     User user = new Gson().fromJson(body, User.class);
 
     String token = userController.login(user);
@@ -144,10 +151,32 @@ public class UserEndpoints {
     }
 
   }
-}
+
 
 
   // TODO: Make the system able to update users
+  @POST
+  @Path("/update")
+  @Consumes (MediaType.APPLICATION_JSON)
+  public Response updateUser(String body) {
+    User user = new Gson().fromJson(body, User.class);
+
+    String token = user.getToken();
+
+    User updatedUser = userController.update(user, token);
+    String json = new Gson().toJson(updatedUser);
+
+    //Return the data to the user
+    if (updatedUser != null) {
+      //Return a response with status 200 and Json as type
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(400).entity("Could not update user").build();
+    }
+   }
+  }
+
+
 
 
 

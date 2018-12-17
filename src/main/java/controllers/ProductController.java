@@ -10,12 +10,8 @@ import utils.Log;
 public class ProductController {
 
   private static DatabaseController dbCon;
-  private static ProductCache productCache;
 
-  public ProductController() { dbCon = new DatabaseController();
-
-  productCache = new ProductCache();
-  }
+  public ProductController() { dbCon = new DatabaseController();}
 
   public static Product getProduct(int id) {
 
@@ -102,8 +98,8 @@ public class ProductController {
 
     // TODO: Use caching layer.
     String sql = "SELECT * FROM product";
-    ProductCache productCache = new ProductCache();
-    productCache.getProducts(true);
+    /*ProductCache productCache = new ProductCache();
+    productCache.getProducts(true);*/
 
     ResultSet rs = dbCon.query(sql);
     ArrayList<Product> products = new ArrayList<Product>();
@@ -113,7 +109,7 @@ public class ProductController {
         Product product =
             new Product(
                 rs.getInt("id"),
-                rs.getString("name"),
+                rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),
                 rs.getString("description"),

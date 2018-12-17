@@ -130,5 +130,24 @@ public class DatabaseController {
     return result;
   }
 
+  public int updateUser(String sql) {
+
+    int result = -2;
+
+    if(connection == null){
+      connection = getConnection();
+    }
+
+    try {
+      PreparedStatement statement = connection.prepareStatement(sql);
+      result = statement.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println("Error: " + e);
+    }
+
+    return result;
+
+  }
 }
+
 
