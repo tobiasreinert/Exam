@@ -13,7 +13,6 @@ public final class Encryption {
       String EncryptionKey = Config.getEncryptionKey();
       char[] key = EncryptionKey.toCharArray();
 
-
       StringBuilder thisIsEncrypted = new StringBuilder();
       // Stringbuilder enables you to play around with strings and make useful stuff
 
