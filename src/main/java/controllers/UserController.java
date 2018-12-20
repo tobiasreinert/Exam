@@ -165,16 +165,11 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
-
-    // Build the query for DB
-    // String sql = "SELECT * FROM user WHERE email= '" + user.getEmail() + "' AND password='" + Hashing.sha(user.getPassword()) + "'";
     String sql = "SELECT * FROM user WHERE email='" + user.getEmail() + "' AND password = '" + hashing.hashWithSalt(user.getPassword()) + "'";
-    // select from user wnere id = 1;
-    // select from user where email = 'test@example.com' AND
+
 
     ResultSet rs = dbCon.query(sql);
     User loginUser;
-    //hashing.setLoginSalt(String.valueOf(System.currentTimeMillis() / 1000L));
 
     try {
       // Get first object, since we only have one

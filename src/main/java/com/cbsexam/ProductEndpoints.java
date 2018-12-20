@@ -31,6 +31,7 @@ public class ProductEndpoints {
     Product product = ProductController.getProduct(idProduct);
 
     // TODO: Add Encryption to JSON fix
+
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(product);
 
